@@ -1,0 +1,31 @@
+group 'test.quiet'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = "$project.group"
+            pom.version = "$project.version"
+            pom.artifactId = "$project.name"
+            repository(url: "https://localhost/nexus/repository/maven-snapshots/") {
+                authentication(userName: "admin", password: "admin")
+            }
+        }
+    }
+}
+
+//打包源代码
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+    //发布源代码
+    archives sourcesJar
+}
+
